@@ -5,6 +5,11 @@ var yosay = require('yosay');
 var _s = require('underscore.string');
 
 module.exports = yeoman.generators.Base.extend({
+  constructor: function(){
+    yeoman.generators.Base.apply(this, arguments);
+    this.option('skip-install');
+  },
+  
   promptUser: function(){
     var done = this.async();
 
@@ -12,7 +17,8 @@ module.exports = yeoman.generators.Base.extend({
 
     var prompts = [{
       name: 'appName',
-      message: 'What is your app\'s name ?'
+      message: 'What is your app\'s name ?',
+      required: true
     }];
 
     this.prompt(prompts, function(props){
@@ -23,6 +29,8 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   copyMainFiles: function(){
+    var done = this.async();
+
     var context = {
       app_name: _s.classify(this.appName),
       app_title: this.appName
@@ -60,13 +68,20 @@ module.exports = yeoman.generators.Base.extend({
       this.templatePath('_gulpfile.js'),
       this.destinationPath('gulpfile.js')
       );
+
+    done();
   },
 
   generateSampleModule: function(){
-    
+    this.composeWith('cba:module', {
+      args: ['Sample Module']
+    });
   },
 
   install: function(){
-    // this.installDependencies();
+    if(this.options.skipInstall){
+      return;
+    }
+    this.installDependencies();
   }
 });

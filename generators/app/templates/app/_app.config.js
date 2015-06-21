@@ -20,6 +20,7 @@
     $urlRouterProvider.otherwise('/404');
 
     // entry point / default URL
+    $urlRouterProvider.when('', '/sample_module');
   }
 
   function attachFastClick(){
